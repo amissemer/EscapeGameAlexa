@@ -109,25 +109,6 @@
             "name": "number",
             "type": "AMAZON.NUMBER"
           }]
-        },
-        {
-          "name": "Jump",
-          "samples": [
-            "sauter"
-          ]
-        },
-        {
-          "name": "Fight",
-          "samples": [
-            "combattre",
-            "combattre {npc}",
-            "combattre le {npc}",
-            "me battre avec {npc}"
-          ],
-          "slots": [{
-            "name": "npc",
-            "type": "LIST_OF_NON_PLAYING_CHARACTERS"
-          }]
         }
       ],
       "types": [{
@@ -139,6 +120,10 @@
           }, {
             "name": {
               "value": "sud"
+            }
+          },{
+            "name": {
+              "value": "combattre"
             }
           }, {
             "name": {
