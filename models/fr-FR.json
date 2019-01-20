@@ -1,0 +1,311 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "jeu d'évasion",
+      "intents": [{
+          "name": "AMAZON.CancelIntent"
+        },
+        {
+          "name": "AMAZON.HelpIntent"
+        },
+        {
+          "name": "AMAZON.RepeatIntent",
+          "samples": [
+            "où suis-je",
+            "où je suis",
+            "où je me trouve",
+            "décrit la pièce",
+            "où est-ce que je suis"
+          ]
+        },
+        {
+          "name": "AMAZON.StopIntent"
+        },
+        {
+          "name": "ResumeGame",
+          "samples": [
+            "recommence le jeu",
+            "reprend le jeu",
+            "redémarre le jeu",
+            "pause"
+          ]
+        },
+        {
+          "name": "RestartGame",
+          "samples": [
+            "nouveau jeu",
+            "commence un nouveau jeu"
+          ]
+        },
+        {
+          "name": "Go",
+          "samples": [
+            "aller {preposition} {direction}",
+            "tirer {preposition} {direction}",
+            "je vais {preposition} {direction}",
+            "tourner {preposition} {direction}",
+            "tourne {preposition} {direction}",
+            "je tourne {direction}",
+            "courir {preposition} {direction}",
+            "je coure {preposition} {direction}",
+            "marcher {preposition} {direction}",
+            "je marche {preposition} {direction}",
+            "passer {preposition} {direction}",
+            "je passe {preposition} {direction}",
+            "sortir {preposition} {direction}",
+            "je sors {preposition} {direction}",
+            "explorer {preposition} {direction}",
+            "j'explore {preposition} {direction}",
+            "m'échapper {preposition} {direction}",
+            "je m'échappe {preposition} {direction}",
+            "escalader {preposition} {direction}",
+            "j'escalade {preposition} {direction}",
+            "monter {preposition} {direction}",
+            "je monte {preposition} {direction}",
+            "prendre {preposition} {direction}",
+            "je prends {preposition} {direction}",
+            "{preposition} {direction}",
+            "aller {direction}",
+            "je vais {direction}",
+            "tourner {direction}",
+            "tourne {direction}",
+            "je tourne {direction}",
+            "tirer {direction}",
+            "courir {direction}",
+            "je coure {direction}",
+            "marcher {direction}",
+            "je marche {direction}",
+            "passer {direction}",
+            "je passe {direction}",
+            "sortir {direction}",
+            "je sors {direction}",
+            "explorer {direction}",
+            "j'explore {direction}",
+            "m'échapper {direction}",
+            "je m'échappe {direction}",
+            "escalader {direction}",
+            "j'escalade {direction}",
+            "monter {direction}",
+            "je monte {direction}",
+            "prendre {direction}",
+            "je prends {direction}",
+            "{direction}"
+          ],
+          "slots": [{
+            "name": "direction",
+            "type": "LIST_OF_DIRECTIONS"
+          },{
+            "name": "preposition",
+            "type": "LIST_OF_PREPOSITIONS"
+          }]
+        },
+        {
+          "name": "Page",
+          "samples": [
+            "page {number}",
+            "aller à la page {number}"
+          ],
+          "slots": [{
+            "name": "number",
+            "type": "AMAZON.NUMBER"
+          }]
+        },
+        {
+          "name": "Jump",
+          "samples": [
+            "sauter"
+          ]
+        },
+        {
+          "name": "Fight",
+          "samples": [
+            "combattre",
+            "combattre {npc}",
+            "combattre le {npc}",
+            "me battre avec {npc}"
+          ],
+          "slots": [{
+            "name": "npc",
+            "type": "LIST_OF_NON_PLAYING_CHARACTERS"
+          }]
+        }
+      ],
+      "types": [{
+          "name": "LIST_OF_DIRECTIONS",
+          "values": [{
+            "name": {
+              "value": "nord"
+            }
+          }, {
+            "name": {
+              "value": "sud"
+            }
+          }, {
+            "name": {
+              "value": "est"
+            }
+          }, {
+            "name": {
+              "value": "ouest"
+            }
+          }, {
+            "name": {
+              "value": "haut"
+            }
+          }, {
+            "name": {
+              "value": "bas"
+            }
+          }, {
+            "name": {
+              "value": "gauche"
+            }
+          }, {
+            "name": {
+              "value": "droite"
+            }
+          }, {
+            "name": {
+              "value": "ouvrir la porte"
+            }
+          },
+          {
+            "name": {
+              "value": "sauter"
+            }
+          },{
+            "name": {
+              "value": "verrouiller la porte"
+            }
+          }, {
+            "name": {
+              "value": "faire demi-tour"
+            }
+          }, {
+            "name": {
+              "value": "continuer"
+            }
+          }, {
+            "id": "bureau",
+            "name": {
+              "value": "bureau",
+              "synonyms": ["table"]
+            }
+          }, {
+            "name": {
+              "value": "fenêtre"
+            }
+          }, {
+            "name": {
+              "value": "porte"
+            }
+          }, {
+            "name": {
+              "value": "attendre"
+            }
+          }, {
+            "name": {
+              "value": "escaliers",
+              "synonyms": ["escalier", "l'escalier", "les escaliers"]
+            }
+          }, {
+            "name": {
+              "value": "ascenseur",
+              "synonyms": ["l'ascenseur"]
+            }
+          }, {
+            "name": {
+              "value": "couloir",
+              "synonyms": ["hall", "corridor"]
+            }
+          }, {
+            "name": {
+              "value": "premier étage"
+            }
+          }, {
+            "name": {
+              "value": "le levier"
+            }
+          }, {
+            "name": {
+              "value": "balai"
+            }
+          },
+          {
+            "name": {
+              "value": "fer à repasser",
+              "synonyms": ["fer"]
+            }
+          }, {
+            "name": {
+              "value": "réception"
+            }
+          },
+          {
+            "name": {
+              "value": "salle de bain",
+              "synonyms": ["la salle de bain"]
+            }
+          },
+          {
+            "name": {
+              "value": "placard",
+              "synonyms": ["le placard"]
+            }
+          }, {
+            "name": {
+              "value": "sous-sol"
+            }
+          }]
+        },
+        {
+          "name": "LIST_OF_NON_PLAYING_CHARACTERS",
+          "values": [{
+            "name": {
+              "value": "araignée",
+              "synonyms": []
+            }
+          }]
+        },
+        {
+          "name": "LIST_OF_PREPOSITIONS",
+          "values": [{
+            "name": {
+              "value": "par"
+            }
+          },
+          {
+            "name": {
+              "value": "vers"
+            }
+          },
+          {
+            "name": {
+              "value": "dans"
+            }
+          },
+          {
+            "name": {
+              "value": "en"
+            }
+          },
+          {
+            "name": {
+              "value": "sur"
+            }
+          },
+          {
+            "name": {
+              "value": "sous"
+            }
+          },
+          {
+            "name": {
+              "value": "à"
+            }
+          }]
+        }
+      ]
+    }
+  }
+}

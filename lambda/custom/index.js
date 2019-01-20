@@ -1,8 +1,8 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
-const story = 'Escape the Office.html';
-const TableName = null // story.replace('.html','').replace(/\s/g, "-");
+const story = "Jeu d'evasion.html";
+const TableName = story.replace('.html','').replace(/[\s']/g, "-");
 var $twine = null;
 const linksRegex = /\[\[([^\|\]]*)\|?([^\]]*)\]\]/g;
 
@@ -36,10 +36,10 @@ const handlers = {
     console.log(`LaunchRequest`);
     if (this.event.session.attributes['room'] !== undefined) {
       var room = currentRoom(this.event);
-      var speechOutput = `Hello, you were playing before and got to the room called ${room['$']['name']}. Would you like to resume? `;
-      var reprompt = `Say, resume game, or, new game.`;
+      var speechOutput = `Bonjour, tu avais commencé une partie, et tu te trouvais dans ${room['$']['name']}. Est-ce qu'on continue ? `;
+      var reprompt = `Dis, reprends le jeu, ou, nouveau jeu.`;
       speechOutput = speechOutput + reprompt;
-      var cardTitle = `Restart`;
+      var cardTitle = `Redémarrer`;
       var cardContent = speechOutput;
       var imageObj = undefined;
       console.log(`LaunchRequest: ${JSON.stringify({
@@ -75,7 +75,7 @@ const handlers = {
     if (this.event.session.attributes['room'] === undefined) {
       // you just started so you are in the first room
       this.event.session.attributes['room'] = $twine[0]['$']['pid'];
-      speechOutput = `Welcome to ${story.replace('.html','')}. Lets start your game. `;
+      speechOutput = `Bienvenue à ${story.replace('.html','')}. Commençons. `;
     }
 
     var room = currentRoom(this.event);
@@ -92,7 +92,7 @@ const handlers = {
     }
     // strip html
     displayableText = displayableText.replace(/<\/?[^>]+(>|$)/g, "");
-    displayableText = displayableText.replace("&amp;", "and");
+    displayableText = displayableText.replace("&amp;", "et");
     speechOutput = speechOutput + displayableText;
 
     // create reprompt from links: "You can go north or go south"
@@ -103,11 +103,11 @@ const handlers = {
         linksRegex.lastIndex++;
       }
       if (reprompt === "") {
-        if (!m[1].toLowerCase().startsWith('if you')) {
-          reprompt = "You can";
+        if (!m[1].toLowerCase().startsWith('si tu')) {
+          reprompt = "Tu peux";
         }
       } else {
-        reprompt = `${reprompt} or`;
+        reprompt = `${reprompt} ou`;
       }
       reprompt = `${reprompt} ${m[1]}`;
     }
@@ -174,10 +174,10 @@ const handlers = {
     this.emit('WhereAmI');
   },
   'AMAZON.HelpIntent': function() {
-    var speechOutput = 'This is the Sample Gamebook Skill. ';
-    var reprompt = 'Say where am I, to hear me speak.';
+    var speechOutput = "Dans ce jeu, tu dois parcourir les pièces et éviter les périls pour t'échapper d'un hotel mystérieux.";
+    var reprompt = 'Dis "Ou suis je ?" pour savoir où tu te trouves.';
     speechOutput = speechOutput + reprompt;
-    var cardTitle = 'Help.';
+    var cardTitle = 'Aide.';
     var cardContent = speechOutput;
     var imageObj = undefined;
     console.log(`HelpIntent: ${JSON.stringify({
@@ -201,11 +201,11 @@ const handlers = {
     this.emit('CompletelyExit');
   },
   'CompletelyExit': function() {
-    var speechOutput = 'Goodbye.';
+    var speechOutput = 'Au revoir.';
     if (TableName) {
-      speechOutput = `Your progress has been saved. ${speechOutput}`;
+      speechOutput = `Ta progression à été sauvegardée. ${speechOutput}`;
     }
-    var cardTitle = 'Exit.';
+    var cardTitle = 'Fin.';
     var cardContent = speechOutput;
     var imageObj = undefined;
     console.log(`CompletelyExit: ${JSON.stringify({
