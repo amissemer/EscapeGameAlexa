@@ -40,6 +40,9 @@
         {
           "name": "Go",
           "samples": [
+            "entrer {preposition} {direction}",
+            "j'entre {preposition} {direction}",
+            "entre {preposition} {direction}",
             "aller {preposition} {direction}",
             "tirer {preposition} {direction}",
             "je vais {preposition} {direction}",
@@ -97,17 +100,6 @@
           },{
             "name": "preposition",
             "type": "LIST_OF_PREPOSITIONS"
-          }]
-        },
-        {
-          "name": "Page",
-          "samples": [
-            "page {number}",
-            "aller à la page {number}"
-          ],
-          "slots": [{
-            "name": "number",
-            "type": "AMAZON.NUMBER"
           }]
         }
       ],
@@ -219,7 +211,7 @@
           {
             "name": {
               "value": "fer à repasser",
-              "synonyms": ["fer"]
+              "synonyms": ["fer", "le fer à repasser"]
             }
           }, {
             "name": {
@@ -240,6 +232,28 @@
           }, {
             "name": {
               "value": "sous-sol"
+            }
+          }, {
+            "name": {
+              "value": "chercher la lampe",
+              "synonyms": ["cherche la lampe", "la lampe", "la lampe de poche", "cherche la lampe de poche"]
+            }
+          }, {
+            "name": {
+              "value": "te lever",
+              "synonyms": ["se lever", "me lever", "je me lève"]
+            }
+          }, {
+            "name": {
+              "value": "le bruit"
+            }
+          }, {
+            "name": {
+              "value": "attraper"
+            }
+          }, {
+            "name": {
+              "value": "parler"
             }
           }]
         },

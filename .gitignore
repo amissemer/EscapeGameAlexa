@@ -51,3 +51,4 @@ node_modules/
 jspm_packages/
 bower_components/
 .tmp/
+.ask/config

@@ -1,25 +1,13 @@
 'use strict';
 
 const Alexa = require('alexa-sdk');
-const story = "Jeu d'evasion.html";
-const TableName = story.replace('.html','').replace(/[\s']/g, "-");
-var $twine = null;
+const fs = require('fs');
+const STORIES = ["Jeu d'evasion.html", "L'immeuble infernal.html"];
+const TableName = 'Evasion';
 const linksRegex = /\[\[([^\|\]]*)\|?([^\]]*)\]\]/g;
 
 module.exports.handler = (event, context, callback) => {
   console.log(`handler: ${JSON.stringify(event.request)}`);
-
-  // read the Twine 2 (Harlowe) story into JSON
-  var fs = require('fs');
-  var contents = fs.readFileSync(story, 'utf8');
-  var m = contents.match(/<tw-storydata [\s\S]*<\/tw-storydata>/g);
-  var xml = m[0];
-  // because Twine xml has an attribute with no value
-  xml = xml.replace('hidden>', 'hidden="true">');
-  var parseString = require('xml2js').parseString;
-  parseString(xml, function(err, result) {
-    $twine = result['tw-storydata']['tw-passagedata'];
-  });
 
   // prepare alexa-sdk
   const alexa = Alexa.handler(event, context);
@@ -34,10 +22,10 @@ module.exports.handler = (event, context, callback) => {
 const handlers = {
   'LaunchRequest': function() {
     console.log(`LaunchRequest`);
-    if (this.event.session.attributes['room'] !== undefined) {
+    if (this.event.session.attributes['story'] && this.event.session.attributes['room'] !== undefined) {
       var room = currentRoom(this.event);
-      var speechOutput = `Bonjour, tu avais commencé une partie, et tu te trouvais dans ${room['$']['name']}. Est-ce qu'on continue ? `;
-      var reprompt = `Dis, reprends le jeu, ou, nouveau jeu.`;
+      var speechOutput = `Bonjour, tu avais commencé une partie dans ${this.event.session.attributes['story'].replace('.html','')}, et tu te trouvais dans ${room['$']['name']}. Est-ce qu'on continue ? `;
+      var reprompt = `Dis, <emphasis>reprends le jeu</emphasis> ou <emphasis>nouveau jeu</emphasis>.`;
       speechOutput = speechOutput + reprompt;
       var cardTitle = `Redémarrer`;
       var cardContent = speechOutput;
@@ -66,16 +54,18 @@ const handlers = {
   'RestartGame': function() {
     console.log(`RestartGame:`);
     // clear session attributes
+    this.event.session.attributes['story'] = undefined;
     this.event.session.attributes['room'] = undefined;
     this.event.session.attributes['visited'] = [];
     this.emit('WhereAmI');
   },
   'WhereAmI': function() {
     var speechOutput = "";
+    let $twine = twine(this.event);
     if (this.event.session.attributes['room'] === undefined) {
       // you just started so you are in the first room
       this.event.session.attributes['room'] = $twine[0]['$']['pid'];
-      speechOutput = `Bienvenue à ${story.replace('.html','')}. Commençons. `;
+      speechOutput = `Bienvenue à ${this.event.session.attributes['story'].replace('.html','')}. Commençons. `;
     }
 
     var room = currentRoom(this.event);
@@ -90,9 +80,6 @@ const handlers = {
       displayableText = displayableText.replace(m[0], m[1]);
       linksRegex.lastIndex = 0;
     }
-    // strip html
-    displayableText = displayableText.replace(/<\/?[^>]+(>|$)/g, "");
-    displayableText = displayableText.replace("&amp;", "et");
     speechOutput = speechOutput + displayableText;
 
     // create reprompt from links: "You can go north or go south"
@@ -103,9 +90,7 @@ const handlers = {
         linksRegex.lastIndex++;
       }
       if (reprompt === "") {
-        if (!m[1].toLowerCase().startsWith('si tu')) {
-          reprompt = "Tu peux";
-        }
+        reprompt = "Dis";
       } else {
         reprompt = `${reprompt} ou`;
       }
@@ -127,8 +112,8 @@ const handlers = {
       this.event.session.attributes['visited'].push(room['$']['pid']);
     }
 
-    var cardTitle = firstSentence;
-    var cardContent = (reprompt > '') ? reprompt : lastSentence;
+    var cardTitle = firstSentence.replace(/<\/?[^>]+(>|$)/g, "");;
+    var cardContent = ((reprompt > '') ? reprompt : lastSentence).replace(/<\/?[^>]+(>|$)/g, "");;
     var imageObj = undefined;
 
     console.log(`WhereAmI: ${JSON.stringify({
@@ -160,17 +145,6 @@ const handlers = {
     console.log(`Go`);
     var slotValues = getSlotValues(this.event.request.intent.slots);
     followLink(this.event, [slotValues['direction']['resolved'], slotValues['direction']['synonym']]);
-    this.emit('WhereAmI');
-  },
-  'Page': function() {
-    // old-school cyoa: "to go south turn to page 20"..you say, "page 20"
-    console.log(`Page`);
-    followLink(this.event, this.event.request.intent.slots.number.value);
-    this.emit('WhereAmI');
-  },
-  'Fight': function() {
-    console.log(`Fight`);
-    followLink(this.event, [this.event.request.intent.slots.npc.value, 'fight']);
     this.emit('WhereAmI');
   },
   'AMAZON.HelpIntent': function() {
@@ -237,8 +211,36 @@ const handlers = {
   },
 };
 
+function readTwine(story) {
+    // read the Twine 2 (Harlowe) story into JSON
+    console.log(`Reading twine from '${story}'...`);
+    var contents = fs.readFileSync(story, 'utf8');
+    var m = contents.match(/<tw-storydata [\s\S]*<\/tw-storydata>/g);
+    var xml = m[0];
+    // because Twine xml has an attribute with no value
+    xml = xml.replace('hidden>', 'hidden="true">');
+    var parseString = require('xml2js').parseString;
+    let $twine = null;
+    parseString(xml, function(err, result) {
+      $twine = result['tw-storydata']['tw-passagedata'];
+    });
+    return $twine;
+}
+function twine(event) {
+  if (event.session.attributes['story'] === undefined) {
+    // story wasn't selected yet, pick random
+    event.session.attributes['story'] = STORIES[Math.floor(Math.random()*STORIES.length)];
+    event.context.$twine = null;
+  }
+  if (!event.context.$twine) {
+    event.context.$twine = readTwine(event.session.attributes['story']);
+  }
+  return event.context.$twine;
+}
+
 function currentRoom(event) {
   var currentRoomData = undefined;
+  let $twine = twine(event);
   for (var i = 0; i < $twine.length; i++) {
     if ($twine[i]['$']['pid'] === event.session.attributes['room']) {
       currentRoomData = $twine[i];
@@ -249,6 +251,7 @@ function currentRoom(event) {
 }
 
 function followLink(event, direction_or_array) {
+  let $twine = twine(event);
   var directions = [];
   if (direction_or_array instanceof Array) {
     directions = direction_or_array;
